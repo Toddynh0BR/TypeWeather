@@ -1,0 +1,47 @@
+{
+  "expo": {
+    "name": "TypeWeather",
+    "slug": "TypeWeather",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "dark",
+    "newArchEnabled": true,
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#13131A"
+    },
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#13131A"
+      },
+      "package": "com.toddynh0br.TypeWeather"
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "4ac85832-bfdf-407c-b0a7-af35c149da84"
+      }
+    },
+    "plugins": [
+      "expo-font"
+    ],
+    "owner": "toddynh0br",
+    "updates": {
+      "enabled": true,
+      "checkAutomatically": "ON_LOAD",
+      "fallbackToCacheTimeout": 0,
+      "url": "https://u.expo.dev/4ac85832-bfdf-407c-b0a7-af35c149da84"
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    }
+  }
+}
