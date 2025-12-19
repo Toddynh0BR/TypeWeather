@@ -30,7 +30,6 @@ justify-content: center;
 align-items: flex-end;
 flex-direction: row;
 display: flex;
-gap: 10px;
 `
 
 export const Header1Text = styled.Text`

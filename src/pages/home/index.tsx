@@ -33,7 +33,7 @@ export function Home({ navigation }: Props) {
               lang: 'pt',
               filter: 'countrycode:br',
               limit: 5,
-              apiKey: 'your-api-key',//change this to your api key
+              apiKey: 'a643568685f14fba9005419417cbaf07',//change this to your api key
             },
           });
       
@@ -93,7 +93,7 @@ export function Home({ navigation }: Props) {
            width={36}
            source={Icon}
           />
-          <S.Header1Text>TypeWeather</S.Header1Text>
+          <S.Header1Text>{'   TypeWeather    '}</S.Header1Text>
 
         </S.Header1>
 

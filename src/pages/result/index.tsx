@@ -214,7 +214,7 @@ export function Result({ navigation, route }: Props) {
             lang: 'pt',
             filter: 'countrycode:br',
             limit: 5,
-            apiKey: 'your-api-key',//change this to your api key
+            apiKey: 'a643568685f14fba9005419417cbaf07',//change this to your api key
           },
         });
     

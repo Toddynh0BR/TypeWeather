@@ -11,7 +11,7 @@ import axios from "axios";
               exclude: 'minutely,hourly,alerts',
               units: 'metric',
               lang: 'pt_br',
-              appid: "your-api-key",//change this to your api key
+              appid: "0051ff2b54f1ae466e72cb622eff4bc1",//change this to your api key
             },
           });
     
