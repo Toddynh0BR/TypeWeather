@@ -81,7 +81,7 @@ cd TypeWeather
 ```
 Instale as dependências(recomendo firmemente que use yarn):
 ```bash
-yarn install
+yarn add
 ```
 
 Inicie o servidor de desenvolvimento:
