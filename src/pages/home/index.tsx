@@ -5,6 +5,8 @@ import { useEffect, useState, useCallback, useRef } from 'react';
 import debounce from 'lodash.debounce';
 import axios from 'axios';
 
+import * as Location from 'expo-location';
+
 import { Input } from '../../components/input';
 
 import BG from "../../../assets/Background.png";
@@ -21,8 +23,13 @@ export function Home({ navigation }: Props) {
     const [query, setQuery] = useState('');
     const [city, setCity] = useState('');
 
+    const [actualCity, setActualCity] = useState('');
+
     const buscarCidades = async (city: string) => {
-        if (city.trim() === '') return;
+        if (city.trim() === '') {
+          setResult([]);
+          return;
+        };
         setLoading(true);
 
         try {
@@ -68,7 +75,10 @@ export function Home({ navigation }: Props) {
           setLoading(false);
         }
     };//busca de cidades
-    const debouncedBuscarCidades = useCallback(debounce(buscarCidades, 500), []);//debounce para evitar que a api seja chamada muitas vezes
+
+    const debouncedBuscarCidades = useCallback(debounce(buscarCidades, 500), []);
+    //debounce para evitar que a api seja chamada muitas vezes
+
     const aoDigitar = (novoTexto: string) => {
         setQuery(novoTexto);
         debouncedBuscarCidades(novoTexto);
@@ -80,6 +90,31 @@ export function Home({ navigation }: Props) {
           debouncedBuscarCidades.cancel();
         };
     }, [debouncedBuscarCidades]);
+
+    useEffect(() => {
+    async function getLocation() {
+      // Pedir permissão
+      let { status } = await Location.requestForegroundPermissionsAsync();
+
+      if (status !== 'granted') {
+        console.log('Permissão negada');
+        return;
+      }
+
+      // Pegar coordenadas
+      let location = await Location.getCurrentPositionAsync({});
+      console.log(location);
+      // Converter para endereço
+      let address = await Location.reverseGeocodeAsync({
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude,
+      });
+
+      setActualCity(address[0].city);
+    }
+
+    getLocation();
+    }, []);
     
     return(
      <S.Container>
