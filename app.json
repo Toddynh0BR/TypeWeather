@@ -20,6 +20,7 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#13131A"
       },
+      "permissions": ["ACCESS_FINE_LOCATION"],
       "package": "com.toddynh0br.TypeWeather"
     },
     "web": {

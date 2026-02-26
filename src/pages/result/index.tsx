@@ -1,4 +1,5 @@
 import { StyleSheet, Text, View, Image, Alert, Animated } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as S from './styles';
 
 import { useEffect, useState, useCallback, useRef } from 'react';
@@ -150,7 +151,7 @@ export function Result({ navigation, route }: Props) {
   const [time, setTime] = useState('');
   let today =  new Date().getDay();
   
-  async function HandleGetWeather(lat: number, lon: number, name: string) {
+  async function HandleGetWeather(lat: number, lon: number, name: string, historic: boolean) {
       setLoading(true);
       setResult([]);
       setCity(name);
@@ -160,6 +161,7 @@ export function Result({ navigation, route }: Props) {
   
        if (!Response) {
         Alert.alert('Erro!', 'Informações não encontradas');
+        navigation.navigate('home', { error: true })
         setLoading(false);
         return;
        }
@@ -167,9 +169,13 @@ export function Result({ navigation, route }: Props) {
        setWeather(Response);
        setInputValue('');
        setLoaded(true);
+       if(!historic) {
+        await AsyncStorage.setItem('HISTORIC', JSON.stringify({ name, lat, lon }))
+       };
       }catch (error) {
         Alert.alert('Erro!', 'Erro ao buscar dados do clima');
         console.error('Erro ao buscar dados do clima:', error);
+        navigation.navigate('home', { error: true })
       }finally {
         setLoading(false);
       }
@@ -264,9 +270,9 @@ export function Result({ navigation, route }: Props) {
 
   useEffect(() => {
     //pegar informações do clima
-    const { lat, lot, name } = route.params;
+    const { lat, lon, name, historic } = route.params;
 
-    HandleGetWeather(lat, lot, name);
+    HandleGetWeather(lat, lon, name, historic);
     /////////////////////////////////
 
     ///pegar data atual

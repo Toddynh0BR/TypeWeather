@@ -101,10 +101,27 @@ justify-content: center;
 display: flex;
 `
 
+export const ResultItemLocal = styled.TouchableOpacity`
+height: 54px;
+width: 100%;
+
+background-color:rgb(59, 59, 84);
+border-radius: 8px;
+margin-bottom: 5px;
+
+padding: 0 25px;
+
+flex-direction: row;
+justify-content: space-between;
+align-items: center;
+display: flex;
+`
+
 export const ResultItemText = styled.Text`
    font-family: 'nunito';
    font-size: 16px;
    color: #fff;
+
 `
 
 //////////////////////////////////56 8 24 20

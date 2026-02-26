@@ -1,5 +1,7 @@
-import { StyleSheet, Text, View, Image, Alert, Animated } from 'react-native';
+import { StyleSheet, Text, View, Image, Alert, Animated, ActivityIndicator } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage'
 import * as S from "./styles";
+import { sessionStorage } from '../../utils/sessionStorage'
 
 import { useEffect, useState, useCallback, useRef } from 'react';
 import debounce from 'lodash.debounce';
@@ -9,21 +11,26 @@ import * as Location from 'expo-location';
 
 import { Input } from '../../components/input';
 
+import { MapPin, ClockCounterClockwise } from 'phosphor-react-native';
+
 import BG from "../../../assets/Background.png";
 import Icon from "../../../assets/Vector.png";
 
 interface Props {
   navigation: any;
+  route: any;
 };
 
-export function Home({ navigation }: Props) {
+
+export function Home({ navigation, route }: Props) {
+    const [historic, setHistoric] = useState(null);
     const [loading, setLoading]= useState(false);
     const [results, setResult] = useState([]);
 
     const [query, setQuery] = useState('');
     const [city, setCity] = useState('');
 
-    const [actualCity, setActualCity] = useState('');
+    const [actualCity, setActualCity] = useState('buscando');
 
     const buscarCidades = async (city: string) => {
         if (city.trim() === '') {
@@ -92,28 +99,61 @@ export function Home({ navigation }: Props) {
     }, [debouncedBuscarCidades]);
 
     useEffect(() => {
-    async function getLocation() {
-      // Pedir permissão
+     async function getLocation() {
+     try {
+      const locationS = sessionStorage.getItem('LOCATION')
+
+      if (locationS) {
+        setActualCity(JSON.parse(locationS));
+      };
+      
       let { status } = await Location.requestForegroundPermissionsAsync();
 
       if (status !== 'granted') {
-        console.log('Permissão negada');
-        return;
-      }
+       console.log('Permissão negada');
+       setActualCity('negado')
+       return;
+      };
 
-      // Pegar coordenadas
       let location = await Location.getCurrentPositionAsync({});
-      console.log(location);
-      // Converter para endereço
+
       let address = await Location.reverseGeocodeAsync({
-        latitude: location.coords.latitude,
-        longitude: location.coords.longitude,
+       latitude: location.coords.latitude,
+       longitude: location.coords.longitude,
       });
 
-      setActualCity(address[0].city);
-    }
+      if (!location.coords.latitude || !location.coords.longitude || (!address[0].city && !address[0].district)) {
+       return setActualCity('incompleto');
+      }
 
-    getLocation();
+      
+       setActualCity({
+        name: address[0].city || address[0].district,
+        lat: location.coords.latitude,
+        lon: location.coords.longitude
+      });
+
+      sessionStorage.setItem('LOCATION', JSON.stringify({
+        name: address[0].city || address[0].district,
+        lat: location.coords.latitude,
+        lon: location.coords.longitude
+      }));
+
+      return;
+     } catch (error) {
+      console.log('ERRO COMPLETO:', error);
+     }
+     };
+     async function getHistoric() {
+      const data = await AsyncStorage.getItem('HISTORIC');
+      if (data) {
+       const parsed = JSON.parse(data)
+       setHistoric(parsed)
+     };
+     };
+
+     getLocation();
+     getHistoric();
     }, []);
     
     return(
@@ -144,17 +184,17 @@ export function Home({ navigation }: Props) {
        
                 <Input 
                  onChangeText={aoDigitar}
-                 placeholder='Buscar local'
+                 placeholder='Buscar local '
                  loading={loading}
                  value={query}
                 />
-                
+
                 <S.Results
                  data={results}
                  renderItem={({item}) => 
                  <S.ResultItem onPress={()=> {navigation.navigate('result', {
                   lat: item.latitude, 
-                  lot: item.longitude, 
+                  lon: item.longitude, 
                   name: item.name
                 })}}>
                   <S.ResultItemText>
@@ -164,6 +204,42 @@ export function Home({ navigation }: Props) {
                  }
                  keyExtractor={(item, index) => index}
                 />
+
+                {
+                 results.length ?
+                 null
+                :
+                actualCity == 'buscando' ?
+                  <S.ResultItemLocal >
+                   <S.ResultItemText> Buscando sua localização atual</S.ResultItemText>
+                   <ActivityIndicator size={20} color="#fff" />
+                  </S.ResultItemLocal>
+                :
+                 actualCity == 'negado' || actualCity == 'incompleto' ?
+                 null
+                :
+                <S.ResultItemLocal onPress={()=> {navigation.navigate('result', { name: actualCity.name, lat: actualCity.lat, lon: actualCity.lon, historic: true})}}>
+                  <S.ResultItemText>
+                   {actualCity.name}
+                  </S.ResultItemText>
+                  <MapPin size={24} weight='bold' color='#fff' style={{marginRight: 5}}/>
+                </S.ResultItemLocal>  
+                }
+
+                {
+                  results.length ?
+                  null
+                 :
+                  historic ?
+                  <S.ResultItemLocal onPress={()=> {navigation.navigate('result', historic)}}>
+                  <S.ResultItemText>
+                   {historic.name}
+                  </S.ResultItemText>
+                  <ClockCounterClockwise size={24} weight='bold' color='#fff' style={{marginRight: 5}}/>
+                </S.ResultItemLocal>  
+                :
+                 null
+                }
          </S.Main1>
 
        </S.PartOne>
