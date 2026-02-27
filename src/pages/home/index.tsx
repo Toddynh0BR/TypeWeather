@@ -121,20 +121,20 @@ export function Home({ navigation, route }: Props) {
        latitude: location.coords.latitude,
        longitude: location.coords.longitude,
       });
-
-      if (!location.coords.latitude || !location.coords.longitude || (!address[0].city && !address[0].district)) {
+      
+      if (!location.coords.latitude || !location.coords.longitude || (!address[0].city && !address[0].subregion)) {
        return setActualCity('incompleto');
       }
 
       
        setActualCity({
-        name: address[0].city || address[0].district,
+        name: address[0].city || address[0].subregion,
         lat: location.coords.latitude,
         lon: location.coords.longitude
       });
 
       sessionStorage.setItem('LOCATION', JSON.stringify({
-        name: address[0].city || address[0].district,
+        name: address[0].city || address[0].subregion,
         lat: location.coords.latitude,
         lon: location.coords.longitude
       }));
