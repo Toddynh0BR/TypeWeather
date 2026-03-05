@@ -2,7 +2,7 @@
   "expo": {
     "name": "TypeWeather",
     "slug": "TypeWeather",
-    "version": "1.0.0",
+    "version": "2.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "dark",
@@ -21,7 +21,12 @@
         "backgroundColor": "#13131A"
       },
       "permissions": ["ACCESS_FINE_LOCATION"],
-      "package": "com.toddynh0br.TypeWeather"
+      "package": "com.toddynh0br.TypeWeather",
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyA4OWSNbRsa5Wxj8rr8slQ2dU2KXPyoIvM"
+        }
+      }
     },
     "web": {
       "favicon": "./assets/favicon.png"

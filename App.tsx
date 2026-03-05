@@ -1,9 +1,12 @@
 import { StatusBar } from 'react-native';
 
-import { View, StyleSheet } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { NavigationContainer } from "@react-navigation/native";
-import { AppRoutes } from "./src/routes/app.routes";
 import React, { useEffect, useState } from 'react';
+
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { AppRoutes } from "./src/routes/app.routes";
+import { View, StyleSheet } from 'react-native';
 
 import * as Updates from 'expo-updates';
 import * as Font from 'expo-font';
@@ -47,15 +50,36 @@ export default function App(props: Props) {
     }
   };//verifica se há atualizações disponíveis
 
+  async function checkConfig() {
+    const config = await AsyncStorage.getItem('CONFIG');
+
+    if (!config) {
+      const defaultConfig = {
+        saveHistoric: true,
+        mobileData: false,
+        song: true,
+
+        notifications: false,
+        location: false,
+
+        unit: 'metric',
+        lang: 'pt_br'
+      }
+
+      await AsyncStorage.setItem('CONFIG', JSON.stringify(defaultConfig));
+    };
+  };//verifica se há uma configuração salva, caso contrário, salva a configuração padrão
+
   useEffect(() => {
     checkForUpdate();
+    checkConfig();
     loadFonts();
   }, []);
 
   if (!fontsLoaded) return (<View style={style.container}></View>);
 
     return (
-     <View style={style.container}>
+     <SafeAreaView style={style.container}>
       <StatusBar       
        backgroundColor="transparent"
        barStyle="light-content"
@@ -64,7 +88,7 @@ export default function App(props: Props) {
       <NavigationContainer>
        <AppRoutes/>
       </NavigationContainer>
-     </View>
+     </SafeAreaView>
   );
 };
 

@@ -22,7 +22,6 @@ interface Props {
 
 const Container = styled.View`
 flex: 1;
-height: fit-content;
 `
 
 const InputArea = styled.View`
@@ -36,9 +35,12 @@ const InputArea = styled.View`
    background-color: #1E1E29;
    border-radius: 10px;
    padding: 0 15px;
+   z-index: 30;
+   position: relative;
 `;
 
 const InputText = styled.TextInput`
+   height: 56px;
    font-family: 'nunito';
    font-size: 16px;
    flex: 1;
@@ -75,6 +77,7 @@ export function Input({ placeholder, loading=false, ...rest}: Props) {
              <InputText
               placeholderTextColor="#7F7F98"
               placeholder={placeholder} 
+              editable={!loading}
               {...rest}
             />
 
